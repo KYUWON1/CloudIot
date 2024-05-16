@@ -13,4 +13,6 @@ router.get("/getdata", dataController.getSleepData);
 
 router.get("/getStoredData", dataController.getStoredSleepData);
 
+router.get("/getRemData", dataController.getRemAvg);
+
 module.exports = router;

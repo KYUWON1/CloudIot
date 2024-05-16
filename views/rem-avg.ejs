@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REM Average</title>
+    <style>
+        /* CSS 스타일링은 필요에 따라 추가하세요 */
+    </style>
+</head>
+<body>
+    <h1>REM Sleep Average</h1>
+    <div>
+        <% if (remData.length > 0) { %>
+            <ul>
+                <% remData.forEach(function(data) { %>
+                    <li>
+                        <p>Date Time: <%= data.dateTime %></p>
+                        <p>Average Period: <%= data.avgPeriod %></p>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No REM sleep data available !</p>
+        <% } %>
+    </div>
+</body>
+</html>

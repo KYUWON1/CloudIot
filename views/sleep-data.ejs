@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Data</title>
+</head>
+<body>
+    <h1>Sleep Data</h1>
+    <div>
+        <h2>Device Information</h2>
+        <p>Device ID: <%= sleepData.deviceId %></p>
+    </div>
+    <div>
+        <h2>Sleep Details</h2>
+        <p>Date of Sleep: <%= sleepData.sleepDate %></p>
+        <p>Total Time in Bed: <%= sleepData.asleepTotal %> minutes</p>
+        <p>Minutes Asleep: <%= sleepData.asleepMin %> minutes</p>
+        <p>Minutes Awake: <%= sleepData.awakeMin %> minutes</p>
+    </div>
+    <div>
+        <h2>Sleep Summary</h2>
+        <% for (const [level, details] of Object.entries(sleepData.sleepSummary)) { %>
+            <h3><%= level %> Levels</h3>
+            <p>Count: <%= details.count %></p>
+            <p>Minutes: <%= details.minutes %></p>
+        <% } %>
+    </div>
+    <div>
+        <h2>Detailed Sleep State</h2>
+        <% sleepData.sleepState.forEach((state, index) => { %>
+            <div>
+                <h3>State #<%= index + 1 %></h3>
+                <p>Date Time: <%= state.dateTime %></p>
+                <p>Level: <%= state.level %></p>
+                <p>Seconds: <%= state.seconds %></p>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

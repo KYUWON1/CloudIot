@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored Sleep Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stored Sleep Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Device ID</th>
+                <th>Date of Sleep</th>
+                <th>Total Time in Bed</th>
+                <th>Minutes Asleep</th>
+                <th>Minutes Awake</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% result.forEach(sleepData => { %>
+                <tr>
+                    <td><%= sleepData.deviceId %></td>
+                    <td><%= sleepData.sleepDate %></td>
+                    <td><%= sleepData.asleepTotal %> minutes</td>
+                    <td><%= sleepData.asleepMin %> minutes</td>
+                    <td><%= sleepData.awakeMin %> minutes</td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

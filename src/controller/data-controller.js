@@ -20,6 +20,7 @@ const pipeline = [
       seconds: "$sleepState.seconds",
     },
   },
+  { $sort: { dateTime: 1 } }, // '1'은 오름차순, '-1'은 내림차순을 의미합니다.
 ];
 
 function convertToTime(seconds) {
@@ -48,8 +49,7 @@ function getSleepData(req, res) {
 
   // 사용할 accessToken
   var accessToken =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1MzN0siLCJzdWIiOiJDMlZaSE4iLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJwcm8gcm51dCByc2xlIHJjZiByYWN0IHJyZXMgcmxvYyByd2VpIHJociBydGVtIiwiZXhwIjoxNzE1ODc5NDc2LCJpYXQiOjE3MTU4NTA2NzZ9.WVunstmZg2hPRPdtLPQGfW050XG_v_b9VT_hEvWvS4Y";
-
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1MzN0siLCJzdWIiOiJDMlZaSE4iLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJwcm8gcm51dCByc2xlIHJjZiByYWN0IHJyZXMgcmxvYyByd2VpIHJociBydGVtIiwiZXhwIjoxNzE2MjM2NzEwLCJpYXQiOjE3MTYyMDc5MTB9.ScfxuToS43rEz4D9Y1HYlgRvKbsdm48wLG5UU0pbd0Y"
   // 디바이스 정보 요청 설정
   const deviceConfig = {
     method: "get",
@@ -63,8 +63,8 @@ function getSleepData(req, res) {
   const sleepConfig = {
     method: "get",
     url: `https://api.fitbit.com/1.2/user/-/sleep/date/${formatDate(
-      sevenDaysAgo
-    )}/${formatDate(today)}.json`,
+      today
+    )}.json`,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -117,7 +117,12 @@ function getSleepData(req, res) {
 
 // 저장된 수면데이터 모두 가져오는 함수
 async function getStoredSleepData(req, res) {
-  const result = await db.getDb().collection("sleepdata").find().toArray();
+  const result = await db
+    .getDb()
+    .collection("sleepdata")
+    .find()
+    .sort({ sleepDate: 1 })
+    .toArray();
   res.render("stored-sleep-data",{result:result});
 }
 
@@ -128,10 +133,12 @@ async function getRemAvg(req, res) {
       .collection("sleepdata")
       .aggregate(pipeline)
       .toArray();
+    console.log("Data Array:", dataArray);
 
     // rem 데이터를 저장할 배열
     const remData = [];
     const timearr = [];
+    var totalAvg = 0 ;
     var avgPeriod = 0;
 
     // 렌더링에 필요한 데이터를 처리
@@ -151,6 +158,8 @@ async function getRemAvg(req, res) {
           avgPeriod = avgPeriod + (tmp2 - tmp1);
         }
         avgPeriod = parseInt(avgPeriod / (timearr.length - 1), 10);
+        console.log("avgPeriod: " + avgPeriod); // 초단위
+        totalAvg += avgPeriod; 
         console.log("ToTime: " + ToTime(avgPeriod));
 
         // rem 데이터를 배열에 추가
@@ -160,13 +169,15 @@ async function getRemAvg(req, res) {
         });
       }
     }
+    totalAvg = parseInt(totalAvg / remData.length, 10);
+    console.log("totalAvg: " + convertToTime(totalAvg));
     // 데이터를 렌더링하기 전에 remData의 avgPeriod를 변환
     remData.forEach(function (data) {
       data.avgPeriod = convertToTime(data.avgPeriod);
     });
 
     // rem-avg.ejs 뷰에 데이터 전달하여 렌더링
-    res.render("rem-avg", { remData: remData });
+    res.render("rem-avg", { remData: remData, totalAvg: convertToTime(totalAvg)});
   } catch (error) {
     console.error("Error in renderRemAvg function:", error);
     // 에러 처리 코드 추가

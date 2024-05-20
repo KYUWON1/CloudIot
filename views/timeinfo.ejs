@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Data</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Sleep Data</h1>
+        
+        <!-- 데이터를 표시하는 부분 -->
+        <% if (data && data.length > 0) { %>
+            <div class="list-group">
+                <% data.forEach(item => { %>
+                    <div class="list-group-item">
+                        <p class="mb-1">Desired Sleep Time: <%= item.desiredSleepHour %> : <%= item.desiredSleepMinute %></p>
+                        <p class="mb-1">Wake Up Time: <%= item.wakeUpHour %> : <%= item.wakeUpMinute %></p>
+                        <button class="btn btn-warning btn-sm" onclick="editData('<%= item._id %>', <%= item.desiredSleepHour %>, <%= item.desiredSleepMinute %>, <%= item.wakeUpHour %>, <%= item.wakeUpMinute %>)">Update</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteData('<%= item._id %>')">Delete</button>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p class="text-center">No data available</p>
+        <% } %>
+    </div>
+
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateModalLabel">Update Sleep Data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="updateForm">
+              <input type="hidden" id="updateId">
+              <div class="form-group">
+                <label for="updateDesiredSleepHour">Desired Sleep Hour</label>
+                <input type="number" class="form-control" id="updateDesiredSleepHour" min="0" max="23">
+              </div>
+              <div class="form-group">
+                <label for="updateDesiredSleepMinute">Desired Sleep Minute</label>
+                <input type="number" class="form-control" id="updateDesiredSleepMinute" min="0" max="59">
+              </div>
+              <div class="form-group">
+                <label for="updateWakeUpHour">Wake Up Hour</label>
+                <input type="number" class="form-control" id="updateWakeUpHour" min="0" max="23">
+              </div>
+              <div class="form-group">
+                <label for="updateWakeUpMinute">Wake Up Minute</label>
+                <input type="number" class="form-control" id="updateWakeUpMinute" min="0" max="59">
+              </div>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // 데이터 수정 함수
+        function editData(id, desiredSleepHour, desiredSleepMinute, wakeUpHour, wakeUpMinute) {
+            document.getElementById('updateId').value = id;
+            document.getElementById('updateDesiredSleepHour').value = desiredSleepHour;
+            document.getElementById('updateDesiredSleepMinute').value = desiredSleepMinute;
+            document.getElementById('updateWakeUpHour').value = wakeUpHour;
+            document.getElementById('updateWakeUpMinute').value = wakeUpMinute;
+            $('#updateModal').modal('show');
+        }
+
+        // 데이터 삭제 함수
+        function deleteData(id) {
+            if (confirm('Are you sure you want to delete this data?')) {
+                fetch(`/bedtime/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Id_:',id);
+                    alert('Data deleted successfully! id:'+id);
+                    location.reload(); // 새로고침하여 데이터를 갱신
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the data.');
+                });
+            }
+        }
+
+        // 데이터 업데이트 함수
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('updateId').value;
+            const updatedData = {
+                desiredSleepHour: document.getElementById('updateDesiredSleepHour').value,
+                desiredSleepMinute: document.getElementById('updateDesiredSleepMinute').value,
+                wakeUpHour: document.getElementById('updateWakeUpHour').value,
+                wakeUpMinute: document.getElementById('updateWakeUpMinute').value,
+            };
+
+            fetch(`/bedtime/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Data updated successfully!');
+                $('#updateModal').modal('hide');
+                location.reload(); // 새로고침하여 데이터를 갱신
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the data.');
+            });
+        });
+    </script>
+</body>
+</html>

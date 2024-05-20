@@ -19,7 +19,10 @@ const MainController = require("../controller/main-controller");
 
 const router = express.Router();
 
-router.post("/postdata", MainController.sendToLambda);
-
+router.get("/",MainController.getMain)
+router.get("/timeinfo",MainController.getSleepTime);
+router.post("/bedtime", MainController.postSleepTime);
+router.put("/bedtime/:id",MainController.putSleepTime);
+router.delete("/bedtime/:id",MainController.deleteSleepTime);
 
 module.exports = router;

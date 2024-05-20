@@ -3,16 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter Bedtime</title>
+    <title>Sleep Data Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Enter Your Bedtime</h1>
-    <form action="/submit-bedtime" method="POST">
-        <label for="hour">Hour:</label>
-        <input type="number" id="hour" name="hour" min="0" max="23" required>
-        <label for="minute">Minute:</label>
-        <input type="number" id="minute" name="minute" min="0" max="59" required>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Sleep Data Form</h1>
+
+        <!-- POST 요청을 통해 데이터를 제출하는 폼 -->
+        <form action="/bedtime" method="POST">
+            <div class="form-group">
+                <label for="desiredSleepHour">Desired Sleep Time:</label>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="number" class="form-control" id="desiredSleepHour" name="desiredSleepHour" placeholder="Hour" min="0" max="23" required>
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" id="desiredSleepMinute" name="desiredSleepMinute" placeholder="Minute" min="0" max="59" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="wakeUpHour">Wake Up Time:</label>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="number" class="form-control" id="wakeUpHour" name="wakeUpHour" placeholder="Hour" min="0" max="23" required>
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" id="wakeUpMinute" name="wakeUpMinute" placeholder="Minute" min="0" max="59" required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Submit</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- 데이터를 받아와서 폼에 채우는 스크립트 -->
+    <script>
+        // URL 파라미터에서 데이터를 읽어서 폼에 채워 넣는 함수
+        function populateFormWithGetData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const desiredSleepTime = urlParams.get('desiredSleepTime');
+            const wakeUpTime = urlParams.get('wakeUpTime');
+            
+            if (desiredSleepTime) {
+                const [desiredSleepHour, desiredSleepMinute] = desiredSleepTime.split(':');
+                document.getElementById('desiredSleepHour').value = desiredSleepHour;
+                document.getElementById('desiredSleepMinute').value = desiredSleepMinute;
+            }
+            if (wakeUpTime) {
+                const [wakeUpHour, wakeUpMinute] = wakeUpTime.split(':');
+                document.getElementById('wakeUpHour').value = wakeUpHour;
+                document.getElementById('wakeUpMinute').value = wakeUpMinute;
+            }
+        }
+
+        // 페이지 로드 시 폼을 채움
+        window.onload = populateFormWithGetData;
+    </script>
 </body>
 </html>

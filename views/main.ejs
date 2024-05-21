@@ -7,6 +7,29 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Sleep Tracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/api/getStoredData">수면 기록보기</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/api/getRemData">렘 수면 기록보기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/timeinfo">알람 정보 보기</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">알람 시간 입력하기</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Sleep Data Form</h1>
 

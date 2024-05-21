@@ -1,4 +1,5 @@
 const axios = require("axios");
+const dataController = require("./data-controller");
 
 // Lambda 함수의 API Gateway 엔드포인트 URL
 const lambdaUrl =
